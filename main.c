@@ -59,13 +59,14 @@ int main(int argc, char *argv[]) {
     int exit_code = argp_parse(&argp, argc, argv, 0, 0, 0);
     if (exit_code) { return exit_code; }
 
+    TrafficStats stats;
+    TUError error;
     switch (action) {
         case NONE:
             // Unreachable
             break;
         case ENTER_TUI_MODE:
-            TrafficStats stats;
-            TUError error = trafficstats_read(&stats, statistics_file_path);
+            error = trafficstats_read(&stats, statistics_file_path);
             if (has_error(error)) {
                 exit_with_error(error);
             }
