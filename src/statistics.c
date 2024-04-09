@@ -53,7 +53,7 @@ void trafficstats_add_entry(TrafficStats *trafficstats, TrafficUsage tu) {
     }
 
     unsigned short delta_d = abs(tu.date.tm_yday - last_entry->date.tm_yday);
-    if (delta_d >= 1 && datasize_to_bytes(tu.tx) >= datasize_to_bytes(last_entry->tx)
+    if (delta_d == 1 && datasize_to_bytes(tu.tx) >= datasize_to_bytes(last_entry->tx)
         && datasize_to_bytes(tu.rx) >= datasize_to_bytes(last_entry->rx))
     {
         tu.tx = datasize_diff(tu.tx, last_entry->tx);
