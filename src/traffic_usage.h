@@ -61,7 +61,7 @@ typedef struct {
 // Returns empty Interface
 Interface interface_new(void);
 // Initializates Interface by name
-Interface interface_init(const char *name, TUError *err);
+TUError interface_init(Interface *interface, const char *name);
 // Returns information about traffic usage using `interface`
 TrafficUsage interface_get_traffic_usage(Interface interface);
 // Checks interface existence

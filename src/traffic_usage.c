@@ -83,23 +83,24 @@ Interface interface_new(void) {
     return (Interface){ "", "", "" };
 }
 
-Interface interface_init(const char *name, TUError *err) {
-    Interface interface = interface_new();
-    strcpy(interface.name, name);
+TUError interface_init(Interface *interface, const char *name) {
+    TUError error;
 
-    sprintf(interface.tx_file_path, NET_STAT_PATH_FORMAT, name, "tx_bytes");
-    *err = check_file(interface.tx_file_path);
-    if (has_error(*err)) {
-        return interface_new();
+    strcpy(interface->name, name);
+
+    sprintf(interface->tx_file_path, NET_STAT_PATH_FORMAT, name, "tx_bytes");
+    error = check_file(interface->tx_file_path);
+    if (has_error(error)) {
+        return error;
     }
 
-    sprintf(interface.rx_file_path, NET_STAT_PATH_FORMAT, name, "rx_bytes");
-    *err = check_file(interface.rx_file_path);
-    if (has_error(*err)) {
-        return interface_new();
+    sprintf(interface->rx_file_path, NET_STAT_PATH_FORMAT, name, "rx_bytes");
+    error = check_file(interface->rx_file_path);
+    if (has_error(error)) {
+        return error;
     }
 
-    return interface;
+    return make_ok();
 }
 
 TrafficUsage interface_get_traffic_usage(Interface interface) {

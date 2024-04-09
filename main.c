@@ -33,10 +33,8 @@ int parse_opt(int key, char *arg, struct argp_state *state) {
             break;
         case 'd':
             if (arg) {
-                TUError error;
                 default_error_handler(check_interface_existence(arg));
-                interface = interface_init(arg, &error);
-                default_error_handler(error);
+                default_error_handler(interface_init(&interface, arg));
             }
             action = START_DAEMON;
             break;
