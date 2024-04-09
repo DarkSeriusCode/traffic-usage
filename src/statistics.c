@@ -35,19 +35,27 @@ void trafficstats_add_entry_unsafe(TrafficStats *trafficstats, TrafficUsage tu) 
 void trafficstats_add_entry(TrafficStats *trafficstats, TrafficUsage tu) {
     if (trafficstats->entry_count == 0) {
         trafficstats_add_entry_unsafe(trafficstats, tu);
+        return;
     }
 
     TrafficUsage *last_entry = trafficstats->entries + trafficstats->entry_count - 1;
     if (last_entry->date.tm_yday == tu.date.tm_yday) {
+        if (datasize_to_bytes(tu.tx) < datasize_to_bytes(last_entry->tx)
+            && datasize_to_bytes(tu.rx) < datasize_to_bytes(last_entry->rx))
+        {
+            last_entry->tx = datasize_add(tu.tx, last_entry->tx);
+            last_entry->rx = datasize_add(tu.rx, last_entry->rx);
+            return;
+        }
         last_entry->rx = tu.rx;
         last_entry->tx = tu.tx;
         return;
     }
 
     unsigned short delta_d = abs(tu.date.tm_yday - last_entry->date.tm_yday);
-    if (delta_d >= 1
-            && datasize_to_bytes(tu.rx) >= datasize_to_bytes(last_entry->rx)
-            && datasize_to_bytes(tu.tx) >= datasize_to_bytes(last_entry->tx)) {
+    if (delta_d >= 1 && datasize_to_bytes(tu.tx) >= datasize_to_bytes(last_entry->tx)
+        && datasize_to_bytes(tu.rx) >= datasize_to_bytes(last_entry->rx))
+    {
         tu.tx = datasize_diff(tu.tx, last_entry->tx);
         tu.rx = datasize_diff(tu.rx, last_entry->rx);
     }
