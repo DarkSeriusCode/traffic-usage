@@ -1,5 +1,7 @@
 .cache
 traffic_usage
-build
 compile_commands.json
 TODO.md
+.project.gf
+obj
+bin
