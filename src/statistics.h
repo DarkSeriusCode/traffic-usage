@@ -40,11 +40,7 @@ void trafficstats_copy(TrafficStats src, TrafficStats *dest);
 
 // Adds new entry without any chekcs. See also `trafficstats_add_entry`
 void trafficstats_add_entry_unsafe(TrafficStats *trafficstats, TrafficUsage tu);
-// Adds new entry with chekcs (next: `last` - the last entry in `trafficstats`):
-// * If `tu` made in the same day that `last`, then tu overwrites `last`
-// * If day difference between `tu` and `last` equal or more than 1 and
-//   tx or rx in `tu` are greater then tx or rx in `last`, then adds the difference between
-//   `tu` and `last`
+// Adds tu.rx and tu.tx to the rx and tx of last entry. Can create new entry if needed
 void trafficstats_add_entry(TrafficStats *trafficstats, TrafficUsage tu);
 
 // Writes `trafficstats` into a file

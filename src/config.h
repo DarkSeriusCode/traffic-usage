@@ -6,4 +6,8 @@
 
 #define FILE_FORMAT_VERSION 1
 
+#define DAEMON_DELAY 3
+#define DAEMON_PROCESS_NAME "traffic_usaged"
+#define NOTIFY_CMD "notify-send -u critical -a traffic-usage \"Error: %s\""
+
 #endif

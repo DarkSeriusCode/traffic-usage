@@ -25,11 +25,30 @@ void run_daemon(const char *statistics_file_path, Interface interface) {
     }
     daemon_error_handler(error);
 
-    while (1) {
-        trafficstats_add_entry(&stats, interface_get_traffic_usage(interface));
-        trafficstats_write(stats, statistics_file_path);
-        sleep(DAEMON_DELAY);
+    TrafficUsage tu;
+    TrafficUsage prev_tu = tu_new(interface_new());
+    bool file_is_empty = true;
+    if (stats.entry_count > 0) {
+        prev_tu = stats.entries[stats.entry_count - 1];
+        file_is_empty = false;
     }
+
+    do {
+        tu = interface_get_traffic_usage(interface);
+
+        TrafficUsage diff = tu;
+        if (!file_is_empty) {
+            diff.tx = datasize_diff(tu.tx, prev_tu.tx);
+            diff.rx = datasize_diff(tu.rx, prev_tu.rx);
+        }
+
+        trafficstats_add_entry(&stats, diff);
+        prev_tu = tu;
+        trafficstats_write(stats, statistics_file_path);
+        file_is_empty = false;
+
+        sleep(DAEMON_DELAY);
+    } while (1);
 }
 
 void kill_daemon() {
@@ -68,8 +87,8 @@ void daemon_error_handler(TUError error) {
     if (!has_error(error)) {
         return;
     }
-    char buff[strlen(NOFITY_CMD) + strlen(error.err_msg)];
-    sprintf(buff, NOFITY_CMD, error.err_msg);
+    char buff[strlen(NOTIFY_CMD) + strlen(error.err_msg)];
+    sprintf(buff, NOTIFY_CMD, error.err_msg);
     system(buff);
     exit(EXIT_FAILURE);
 }

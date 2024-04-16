@@ -34,6 +34,11 @@ void datasize_normalize(DataSize *data_size);
 DataSize datasize_add(DataSize ds1, DataSize ds2);
 // Difference between ds1 and ds2
 DataSize datasize_diff(DataSize ds1, DataSize ds2);
+// Compares two DataSizes, returns
+// 0 if they're equal,
+// 1 if ds1 > ds2,
+// -1 if ds1 < ds2
+short datasize_cmp(DataSize ds1, DataSize ds2);
 // Makes DataSize from bytes
 DataSize datasize_from_bytes(size_t bytes);
 // Convert DataSize to bytes

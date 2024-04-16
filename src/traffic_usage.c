@@ -39,6 +39,20 @@ DataSize datasize_diff(DataSize ds1, DataSize ds2) {
      return datasize_from_bytes(datasize_to_bytes(ds1) - datasize_to_bytes(ds2));
 }
 
+short datasize_cmp(DataSize ds1, DataSize ds2) {
+    size_t ds1_bytes = datasize_to_bytes(ds1);
+    size_t ds2_bytes = datasize_to_bytes(ds2);
+
+    if (ds1_bytes < ds2_bytes)
+        return -1;
+    if (ds1_bytes == ds2_bytes)
+        return 0;
+    if (ds1_bytes > ds2_bytes)
+        return 1;
+
+    return 0; // unreachable
+}
+
 DataSize datasize_from_bytes(size_t bytes) {
     DataSize ds = datasize_new();
     ds.bytes = bytes;
