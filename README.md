@@ -3,14 +3,11 @@ It is a simple program that collects statistics about your internet usage and st
 
 # Build and usage
 ```
-cmake -B build
-cmake --build build --target traffic_usage
-sudo cmake --install build
+make
+sudo make install
 traffic_usage --help
 ```
-By default the program will be installed to `/usr/local/`, you can change the installation dir
-specifying a `--prefix` in the last command
-
+By default the program will be installed to `/usr/local/`
 At first, run the daemon that will collect statistics: `traffic_usage -d <interface>`
 where `<interface>` is an interface to collect statistics (to see list of all interfaces on your
 system use: `traffic_usage -l`)
