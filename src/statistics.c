@@ -1,7 +1,11 @@
 #include "statistics.h"
 
 TrafficStats trafficstats_new(void) {
-    TrafficStats stats = { 0, NULL };
+    TrafficStats stats = {
+        .entry_count = 0,
+        .entries     = NULL,
+        .cache       = { datasize_new(), datasize_new() },
+    };
     return stats;
 }
 
@@ -73,6 +77,7 @@ TUError trafficstats_write(TrafficStats trafficstats, const char *fname) {
         fwrite(entry->interface_name, sizeof(char), strlen(entry->interface_name), fp);
         fwrite(&raw_time, sizeof(time_t), 1, fp);
     }
+    fwrite(&trafficstats.cache, sizeof(DataSize), 2, fp);
 
     fclose(fp);
     return make_ok();
@@ -105,6 +110,7 @@ TUError trafficstats_read(TrafficStats *stats, const char *fname) {
         tu.date = *localtime(&raw_time);
         *(stats->entries + i) = tu;
     }
+    fread(&stats->cache, sizeof(DataSize), 2, fp);
 
     fclose(fp);
     return make_ok();

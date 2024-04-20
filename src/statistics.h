@@ -26,6 +26,9 @@
 typedef struct {
     size_t entry_count;
     TrafficUsage *entries;
+    struct {
+        DataSize last_tx, last_rx;
+    } cache;
 } TrafficStats;
 
 // Function type used in `trafficstats_reduce` func

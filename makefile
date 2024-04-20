@@ -2,24 +2,34 @@ PROJECT_NAME = traffic_usage
 INSTALL_PREFIX = /usr/local
 
 CC = clang
-CFLAGS = -Wall -g
+CFLAGS = -Wall
 LDFLAGS = -lncurses
 
-SRC = $(wildcard src/*.c)
-OBJ = $(patsubst src/%.c,obj/%.o,$(SRC))
-OBJ += main.o
+ifdef debug
+	CFLAGS += -O0 -g
+else
+	CFLAGS += -O2
+endif
 
-$(shell mkdir -p bin obj)
+OBJ_DIR = obj
+BIN_DIR = bin
+
+SRC     = $(wildcard src/*.c)
+HEADERS = $(wildcard src/*.h)
+OBJ     = $(patsubst src/%.c,$(OBJ_DIR)/%.o,$(SRC))
+OBJ     += main.o
+
+$(shell mkdir -p $(BIN_DIR) $(OBJ_DIR))
 
 .PHONY: all
-all: $(OBJ)
-	$(CC) -o bin/$(PROJECT_NAME) $^ $(CFLAGS) $(LDFLAGS)
+all: $(OBJ) $(HEADERS)
+	$(CC) $(CFLAGS) -o $(BIN_DIR)/$(PROJECT_NAME) $(OBJ) $(LDFLAGS)
 
-obj/%.o: src/%.c
+$(OBJ_DIR)/%.o: src/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 .PHONY: install
-install: bin/$(PROJECT_NAME)
+install: $(BIN_DIR)/$(PROJECT_NAME)
 	install -m 755 $< $(INSTALL_PREFIX)/bin
 
 .PHONY: uninstall
@@ -28,4 +38,4 @@ uninstall:
 
 .PHONY: clean
 clean:
-	rm -rf bin $(OBJ) obj
+	rm -rf $(BIN_DIR) $(OBJ_DIR)

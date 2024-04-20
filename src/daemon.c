@@ -1,12 +1,11 @@
 #include "daemon.h"
-#include "statistics.h"
 
 void run_daemon(const char *statistics_file_path, Interface interface) {
     if (get_daemon_pid() != -1) {
         printf("traffic_usage daemon is already running!\n");
         return;
     }
-    if (daemon(0, 0)) {
+    if (daemon(1, 0)) {
         perror("Daemon");
         return;
     }
@@ -27,25 +26,25 @@ void run_daemon(const char *statistics_file_path, Interface interface) {
 
     TrafficUsage tu;
     TrafficUsage prev_tu = tu_new(interface_new());
-    bool file_is_empty = true;
-    if (stats.entry_count > 0) {
-        prev_tu = stats.entries[stats.entry_count - 1];
-        file_is_empty = false;
-    }
+    prev_tu.tx = stats.cache.last_tx;
+    prev_tu.rx = stats.cache.last_rx;
 
     do {
         tu = interface_get_traffic_usage(interface);
 
         TrafficUsage diff = tu;
-        if (!file_is_empty) {
+        short tx_cmp_res = datasize_cmp(tu.tx, prev_tu.tx);
+        short rx_cmp_res = datasize_cmp(tu.rx, prev_tu.rx);
+        if ((tx_cmp_res == 1 || tx_cmp_res == 0) && (rx_cmp_res == 1 || rx_cmp_res == 0)) {
             diff.tx = datasize_diff(tu.tx, prev_tu.tx);
             diff.rx = datasize_diff(tu.rx, prev_tu.rx);
         }
 
         trafficstats_add_entry(&stats, diff);
         prev_tu = tu;
+        stats.cache.last_tx = tu.tx;
+        stats.cache.last_rx = tu.rx;
         trafficstats_write(stats, statistics_file_path);
-        file_is_empty = false;
 
         sleep(DAEMON_DELAY);
     } while (1);
