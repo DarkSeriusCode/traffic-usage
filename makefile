@@ -22,8 +22,10 @@ OBJ     += main.o
 $(shell mkdir -p $(BIN_DIR) $(OBJ_DIR))
 
 .PHONY: all
-all: $(OBJ) $(HEADERS)
-	$(CC) $(CFLAGS) -o $(BIN_DIR)/$(PROJECT_NAME) $(OBJ) $(LDFLAGS)
+all: $(BIN_DIR)/$(PROJECT_NAME)
+
+$(BIN_DIR)/$(PROJECT_NAME): $(OBJ) $(HEADERS)
+	$(CC) $(CFLAGS) -o $@ $(OBJ) $(LDFLAGS)
 
 $(OBJ_DIR)/%.o: src/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
