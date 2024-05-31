@@ -22,7 +22,7 @@ Header header_new(struct tm lower_bound, struct tm upper_bound) {
     Header header = {
         .geometry = { getmaxx(stdscr), 3 },
         .position = { 0, 0 },
-        .current_date = lower_bound,
+        .current_date = upper_bound,
         .UPPER_BOUND = upper_bound,
         .LOWER_BOUND = lower_bound,
     };
@@ -338,10 +338,12 @@ void enter_tui_mode(TrafficStats stats) {
             case 'j':
                 trafftable_scrl(&table, -1);
                 break;
-            case 'h':
+            case 'l':
+                table.entries_offset = 0;
                 header_next_month(&header);
                 break;
-            case 'l':
+            case 'h':
+                table.entries_offset = 0;
                 header_previous_month(&header);
                 break;
         }
