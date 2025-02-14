@@ -23,6 +23,7 @@ void run_daemon(const char *statistics_file_path, Interface interface) {
         error = trafficstats_read(&stats, statistics_file_path);
     }
     daemon_error_handler(error);
+    trafficstats_concat_dup(&stats);
 
     TrafficUsage tu;
     TrafficUsage prev_tu = tu_new(interface_new());

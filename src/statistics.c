@@ -123,3 +123,20 @@ TrafficUsage trafficstats_reduce(TrafficStats stats, StatsReduceFn reduce_func) 
     }
     return acc;
 }
+
+void trafficstats_concat_dup(TrafficStats *stats) {
+    for (size_t i = 0; i < stats->entry_count; i++) {
+        TrafficUsage *current_entry = &stats->entries[i];
+
+        for (size_t j = i + 1; j < stats->entry_count; j++){
+            TrafficUsage *entry = &stats->entries[j];
+            if (current_entry->date.tm_mon != entry->date.tm_mon) break;
+            if (current_entry->date.tm_mday == entry->date.tm_mday) {
+                current_entry->rx = datasize_add(current_entry->rx, entry->rx);
+                current_entry->tx = datasize_add(current_entry->tx, entry->tx);
+                memcpy(entry, entry + 1, sizeof(TrafficUsage) * (stats->entry_count - 1 - j));
+                stats->entry_count -= 1;
+            }
+        }
+    }
+}

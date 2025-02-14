@@ -54,4 +54,7 @@ TUError trafficstats_read(TrafficStats *stats, const char *fname);
 // Reduces entries in `stats` using `reduce_func`
 TrafficUsage trafficstats_reduce(TrafficStats stats, StatsReduceFn reduce_func);
 
+// Concatenate duplicates
+void trafficstats_concat_dup(TrafficStats *stats);
+
 #endif

@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include "statistics.h"
 #include "traffic_usage.h"
+#include "utils.h"
 
 #define TABLE_HEADER "Day|Interface|%*s|%*s"
 #define TABLE_HEADER_HEIGHT 2
@@ -16,9 +17,6 @@
 
 #define USAGE_FOR_ALL_TIME_TITLE "Total usage (for all time)"
 #define USAGE_FOR_MONTH_TITLE "Total usage (for current month)"
-
-#define max(a, b) ((a > b) ? a : b)
-#define min(a, b) ((a < b) ? a : b)
 
 void date_inc_by_month(struct tm *date);
 void date_dec_by_month(struct tm *date);

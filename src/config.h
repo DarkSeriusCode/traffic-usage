@@ -8,6 +8,6 @@
 
 #define DAEMON_DELAY 3
 #define DAEMON_PROCESS_NAME "traffic_usaged"
-#define NOTIFY_CMD "notify-send -u critical -a traffic-usage \"Error: %s\""
+#define NOTIFY_CMD "dunstify \"Error: %s\""
 
 #endif
